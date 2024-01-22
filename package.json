@@ -1,0 +1,19 @@
+{
+  "name": "capacitor-white-label",
+  "version": "1.0.0",
+  "description": "A package that aids the build process for Capacitor apps designed for white labeling.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "cap-white-label": "./bin/cap-white-label"
+  },
+  "keywords": [
+    "white",
+    "label",
+    "capacitor"
+  ],
+  "author": "Ehiosun Bishop",
+  "license": "ISC"
+}
