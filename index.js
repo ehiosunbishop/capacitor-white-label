@@ -1,6 +1,7 @@
 const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
+const yaml = require('js-yaml');
 const { execSync } = require('child_process');
 
 // Define default values or handle missing arguments as needed
@@ -8,10 +9,11 @@ const appId = argv.appId || null;
 const isProd = argv.prod || false;
 const build = argv.build || false;
 const appName = argv.appName || 'Capacitor App';
+const buildNumber = argv.buildNumber || 1;
+const versionNumber = argv.versionNumber || '1.0.0';
 const generateAssets = argv.generateAssets || false;
-let appFlowChannel = argv.appFlowChannel || null;
-let hostname = argv.hostname || appId;
-
+const appFlowChannel = argv.appFlowChannel || null;
+const hostname = argv.hostname || appId;
 
 // Check if appId is provided
 if (!appId) {
@@ -62,6 +64,41 @@ try {
      process.exit(1); // Exit with an error code
 }
 
+// Create or update the YAML file with specific details
+const yamlFileName = 'trapeze-config.yaml';
+const yamlFilePath = path.join(projectRoot, yamlFileName);
+
+try {
+     const yamlContent = yaml.dump({
+          platforms: {
+               android: {
+                    appName: appName,
+                    packageName: appId,
+                    versionName: versionNumber,
+                    versionCode: buildNumber
+               },
+               ios: {
+                    targets: {
+                         App: {
+                              version: versionNumber,
+                              buildNumber: buildNumber,
+                              bundleId: appId,
+                              displayName: appName,
+                              productName: appName
+                         }
+                    }
+               }
+          }
+     });
+
+     // Write the YAML content to the file
+     fs.writeFileSync(yamlFilePath, yamlContent, 'utf-8');
+     console.log(`YAML file created at: ${yamlFilePath}`);
+} catch (error) {
+     console.error('Error creating YAML file:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
 if (build) {
      // Run yarn build or yarn build:prod based on --prod flag
      const buildCommand = isProd ? 'yarn build:prod' : 'yarn build';
@@ -104,3 +141,15 @@ try {
      console.error('Error executing cap sync command:', error.message);
      process.exit(1); // Exit with an error code
 }
+
+// Run npx run trapeze command
+console.log('Running command: npx trapeze run');
+
+try {
+     execSync(`npx trapeze run ${yamlFileName} --android-project android --ios-project ios/App`, { stdio: 'inherit' });
+} catch (error) {
+     console.error('Error executing trapeze command:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
+console.log('\x1b[32m%s\x1b[0m', 'App White Labeling was successful. You can run "npx cap open ios" to view the app now.');
