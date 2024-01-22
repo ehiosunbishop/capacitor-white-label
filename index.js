@@ -41,7 +41,7 @@ args.forEach((arg, index) => {
 
 // Check if appId is provided
 if (!appId) {
-     console.error('Error: App ID is required. Use the --id flag to specify the App ID.');
+     console.error('Error: App ID is required. Use the --appId flag to specify the App ID.');
      process.exit(1); // Exit with an error code
 }
 
