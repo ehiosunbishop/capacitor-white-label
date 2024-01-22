@@ -20,7 +20,7 @@ if (!appId) {
 }
 
 // Update capacitor.config.ts with the provided appId
-//const projectRoot = process.cwd(); // Get the current working directory where the script is executed
+const projectRoot = process.cwd(); // Get the current working directory where the script is executed
 const capacitorConfigPath = path.join(projectRoot, 'capacitor.config.ts');
 
 try {
@@ -82,7 +82,7 @@ if (build) {
 if (generateAssets) {
      // Run npx @capacitor/assets generate...  Generate splash screen and icon paths
      const assetsPath = `resources/${appId}`;
-     
+
      // Run the command to generate splash screen and icon
      const generateCommand = `npx @capacitor/assets generate --assetPath=${assetsPath}`;
      console.log(`Running command: ${generateCommand}`);
