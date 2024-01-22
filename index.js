@@ -1,43 +1,15 @@
+const argv = require('yargs').argv;
+const fs = require('fs');
+const path = require('path');
 const { execSync } = require('child_process');
 
-// Get the command-line arguments
-const args = process.argv.slice(5);
-
 // Define default values or handle missing arguments as needed
-let appId = null;
-let appName = 'Capacitor App';
-let isProd = false;
-let generateAssets = false;
-let appFlowChannel = null;
+const appId = argv.appId || null;
+const isProd = argv.prod || false;
+const appName = argv.prod || 'Capacitor App';
+const generateAssets = argv.generateAssets || false;
+let appFlowChannel = argv.appFlowChannel || null;
 let hostname = appId;
-
-// Parse command-line arguments
-args.forEach((arg, index) => {
-     switch (arg) {
-          case '--appId':
-               // Get the value following --id
-               appId = args[index + 1];
-               break;
-          case '--prod':
-               // Set isProd to true if --prod is present
-               isProd = true;
-               break;
-          case '--generateAssets':
-               // Set generateAssets to true if --generateAssets is present
-               isProd = true;
-               break;
-          case '--appFlowChannel':
-               appFlowChannel = args[index + 1];
-               break;
-          case '--hostname':
-               hostname = args[index + 1];
-               break;
-          case '--appName':
-               appName = args[index + 1];
-               break;
-          // Add more cases for additional arguments if needed
-     }
-});
 
 // Check if appId is provided
 if (!appId) {

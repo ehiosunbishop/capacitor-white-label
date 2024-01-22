@@ -15,5 +15,8 @@
     "capacitor"
   ],
   "author": "Ehiosun Bishop",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
 }
