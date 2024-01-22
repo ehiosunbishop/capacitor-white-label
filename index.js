@@ -12,6 +12,7 @@ const generateAssets = argv.generateAssets || false;
 let appFlowChannel = argv.appFlowChannel || null;
 let hostname = argv.hostname || appId;
 
+
 // Check if appId is provided
 if (!appId) {
      console.error('Error: App ID is required. Use the --appId flag to specify the App ID.');
@@ -19,7 +20,7 @@ if (!appId) {
 }
 
 // Update capacitor.config.ts with the provided appId
-const projectRoot = process.cwd(); // Get the current working directory where the script is executed
+//const projectRoot = process.cwd(); // Get the current working directory where the script is executed
 const capacitorConfigPath = path.join(projectRoot, 'capacitor.config.ts');
 
 try {
@@ -80,10 +81,10 @@ if (build) {
 
 if (generateAssets) {
      // Run npx @capacitor/assets generate...  Generate splash screen and icon paths
-     const assetsPath = path.join(projectRoot, 'resources', appId);
-
+     const assetsPath = `resources/${appId}`;
+     
      // Run the command to generate splash screen and icon
-     const generateCommand = `npx @capacitor/assets generate --assetPath ${assetsPath}`;
+     const generateCommand = `npx @capacitor/assets generate --assetPath=${assetsPath}`;
      console.log(`Running command: ${generateCommand}`);
 
      try {
