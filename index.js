@@ -14,7 +14,7 @@ let hostname = appId;
 // Parse command-line arguments
 args.forEach((arg, index) => {
      switch (arg) {
-          case '--id':
+          case '--appId':
                // Get the value following --id
                appId = args[index + 1];
                break;
