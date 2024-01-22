@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 // Define default values or handle missing arguments as needed
 const appId = argv.appId || null;
 const isProd = argv.prod || false;
-const appName = argv.prod || 'Capacitor App';
+const appName = argv.appName || 'Capacitor App';
 const generateAssets = argv.generateAssets || false;
 let appFlowChannel = argv.appFlowChannel || null;
 let hostname = appId;
