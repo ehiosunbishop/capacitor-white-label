@@ -9,7 +9,7 @@ const isProd = argv.prod || false;
 const appName = argv.appName || 'Capacitor App';
 const generateAssets = argv.generateAssets || false;
 let appFlowChannel = argv.appFlowChannel || null;
-let hostname = appId;
+let hostname = argv.hostname || appId;
 
 // Check if appId is provided
 if (!appId) {
