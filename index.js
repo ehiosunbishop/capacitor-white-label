@@ -6,6 +6,7 @@ const { execSync } = require('child_process');
 // Define default values or handle missing arguments as needed
 const appId = argv.appId || null;
 const isProd = argv.prod || false;
+const build = argv.build || false;
 const appName = argv.appName || 'Capacitor App';
 const generateAssets = argv.generateAssets || false;
 let appFlowChannel = argv.appFlowChannel || null;
@@ -60,19 +61,21 @@ try {
      process.exit(1); // Exit with an error code
 }
 
-// Run yarn build or yarn build:prod based on --prod flag
-const buildCommand = isProd ? 'yarn build:prod' : 'yarn build';
-console.log(`Running command: ${buildCommand}`);
+if (build) {
+     // Run yarn build or yarn build:prod based on --prod flag
+     const buildCommand = isProd ? 'yarn build:prod' : 'yarn build';
+     console.log(`Running command: ${buildCommand}`);
 
-// Determine whether to use sudo (for Unix-like systems) or not
-const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
-const commandPrefix = useSudo ? 'sudo ' : ''; // Add 'sudo ' prefix if necessary
+     // Determine whether to use sudo (for Unix-like systems) or not
+     const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
+     const commandPrefix = useSudo ? 'sudo ' : ''; // Add 'sudo ' prefix if necessary
 
-try {
-     execSync(`${commandPrefix}${buildCommand}`, { stdio: 'inherit' }); // Execute the build command
-} catch (error) {
-     console.error('Error executing build command:', error.message);
-     process.exit(1); // Exit with an error code
+     try {
+          execSync(`${commandPrefix}${buildCommand}`, { stdio: 'inherit' }); // Execute the build command
+     } catch (error) {
+          console.error('Error executing build command:', error.message);
+          process.exit(1); // Exit with an error code
+     }
 }
 
 if (generateAssets) {
