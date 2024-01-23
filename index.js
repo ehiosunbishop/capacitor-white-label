@@ -79,7 +79,7 @@ platforms:
     versionCode: ${buildNumber}
     manifest:
      - file: AndroidManifest.xml
-       target: 'manifest'
+       target: manifest
        attrs:
          package: ${appId}
     gradle:
