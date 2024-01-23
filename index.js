@@ -2,7 +2,6 @@ const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { deleteFolderRecursive, createDirectoryRecursive } = require('./helpers/fs-helper');
 
 // Define default values or handle missing arguments as needed
 const appId = argv.appId || null;
@@ -218,3 +217,30 @@ try {
 }
 
 console.log('\x1b[32m%s\x1b[0m', 'App White Labeling was successful. You can run "npx cap open [platform]" to view the app now.');
+
+
+// Helper function to delete files and folders recursively
+function deleteFolderRecursive(directoryPath) {
+     if (fs.existsSync(directoryPath)) {
+          fs.readdirSync(directoryPath).forEach((file, index) => {
+               const filePath = path.join(directoryPath, file);
+               if (fs.lstatSync(filePath).isDirectory()) {
+                    deleteFolderRecursive(filePath);
+               } else {
+                    fs.unlinkSync(filePath);
+               }
+          });
+          fs.rmdirSync(directoryPath);
+     }
+}
+
+// Helper function to create directories recursively
+function createDirectoryRecursive(directoryPath) {
+     const parts = directoryPath.split(path.sep);
+     for (let i = 1; i <= parts.length; i++) {
+          const currentPath = path.join.apply(null, parts.slice(0, i));
+          if (!fs.existsSync(currentPath)) {
+               fs.mkdirSync(currentPath);
+          }
+     }
+}
