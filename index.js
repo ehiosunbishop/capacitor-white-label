@@ -119,7 +119,7 @@ platforms:
          applicationId: '"${appId}"'
     manifest:
      - file: AndroidManifest.xml
-       target: manifest/application
+       target: manifest/application/activity
        attrs:
          android:name: ${appId}.MainActivity
     xml:
