@@ -69,7 +69,7 @@ const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
 
 try {
      // Delete existing files and folders in the java directory
-     deleteFolderRecursive(path.join(projectRootx, javaDirectory));
+     deleteFolderRecursive(path.join(projectRoot, javaDirectory));
 
      // Create new directory structure
      createDirectoryRecursive(path.join(javaDirectory, javaPackagePath));
