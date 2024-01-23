@@ -109,7 +109,7 @@ platforms:
      - resFile: values/strings.xml
        target: resources/string[@name="custom_url_scheme"]
        replace: |
-         <string name="package_name">${appId}</string>
+         <string name="custom_url_scheme">${appId}</string>
   ios:
     targets:
       App:
@@ -163,15 +163,6 @@ if (generateAssets) {
      }
 }
 
-// Run npx cap sync
-console.log('Running command: npx cap sync');
-
-try {
-     execSync('npx cap sync', { stdio: 'inherit' }); // Execute cap sync
-} catch (error) {
-     console.error('Error executing cap sync command:', error.message);
-     process.exit(1); // Exit with an error code
-}
 
 // Run npx run trapeze command
 console.log('Running command: npx trapeze run');
@@ -180,6 +171,16 @@ try {
      execSync(`npx trapeze run ${yamlFileName} --android-project android --ios-project ios/App`, { stdio: 'inherit' });
 } catch (error) {
      console.error('Error executing trapeze command:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
+// Run npx cap sync
+console.log('Running command: npx cap sync');
+
+try {
+     execSync('npx cap sync', { stdio: 'inherit' }); // Execute cap sync
+} catch (error) {
+     console.error('Error executing cap sync command:', error.message);
      process.exit(1); // Exit with an error code
 }
 
