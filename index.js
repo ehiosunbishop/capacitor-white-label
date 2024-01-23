@@ -2,6 +2,7 @@ const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { deleteFolderRecursive, createDirectoryRecursive } = require('./helpers/fs-helper');
 
 // Define default values or handle missing arguments as needed
 const appId = argv.appId || null;
@@ -69,10 +70,10 @@ const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
 
 try {
      // Delete existing files and folders in the java directory
-     rmSync(javaDirectory, { recursive: true, force: true });
+     deleteFolderRecursive(javaDirectory);
 
      // Create new directory structure
-     mkdirSync(path.join(javaDirectory, javaPackagePath), { recursive: true });
+     createDirectoryRecursive(path.join(javaDirectory, javaPackagePath));
 
      // Create MainActivity.java file with the specified content
      const mainActivityContent = `package ${appId};
@@ -83,14 +84,13 @@ public class MainActivity extends BridgeActivity {}
 `;
 
      const mainActivityFilePath = path.join(javaDirectory, javaPackagePath, 'MainActivity.java');
-     writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
+     fs.writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
 
      console.log(`Java directory updated at: ${javaDirectory}`);
 } catch (error) {
      console.error('Error updating Java directory:', error.message);
      process.exit(1); // Exit with an error code
 }
-
 
 // Create or update the YAML file with specific details
 const yamlFileName = 'trapeze-config.yaml';
