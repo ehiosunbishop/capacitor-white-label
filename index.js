@@ -1,7 +1,6 @@
 const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
 const { execSync } = require('child_process');
 
 // Define default values or handle missing arguments as needed
@@ -64,6 +63,35 @@ try {
      process.exit(1); // Exit with an error code
 }
 
+// Update the Java directory
+const javaDirectory = path.join(projectRoot, 'android', 'app', 'src', 'main', 'java');
+const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
+
+try {
+     // Delete existing files and folders in the java directory
+     rmSync(javaDirectory, { recursive: true, force: true });
+
+     // Create new directory structure
+     mkdirSync(path.join(javaDirectory, javaPackagePath), { recursive: true });
+
+     // Create MainActivity.java file with the specified content
+     const mainActivityContent = `package ${appId};
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}
+`;
+
+     const mainActivityFilePath = path.join(javaDirectory, javaPackagePath, 'MainActivity.java');
+     writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
+
+     console.log(`Java directory updated at: ${javaDirectory}`);
+} catch (error) {
+     console.error('Error updating Java directory:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
+
 // Create or update the YAML file with specific details
 const yamlFileName = 'trapeze-config.yaml';
 const yamlFilePath = path.join(projectRoot, yamlFileName);
@@ -90,6 +118,11 @@ platforms:
              applicationId:
        replace:
          applicationId: '"${appId}"'
+    manifest:
+     - file: AndroidManifest.xml
+       target: manifest/application
+       attrs:
+         android:name: ${appId}.MainActivity
     xml:
      - resFile: values/strings.xml
        target: resources/string[@name="app_name"]
@@ -184,4 +217,4 @@ try {
      process.exit(1); // Exit with an error code
 }
 
-console.log('\x1b[32m%s\x1b[0m', 'App White Labeling was successful. You can run "npx cap open ios" to view the app now.');
+console.log('\x1b[32m%s\x1b[0m', 'App White Labeling was successful. You can run "npx cap open [platform]" to view the app now.');
