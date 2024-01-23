@@ -74,14 +74,8 @@ try {
 platforms:
   android:
     appName: ${appName}
-    packageName: ${appId}
     versionName: ${versionNumber}
     versionCode: ${buildNumber}
-    manifest:
-     - file: AndroidManifest.xml
-       target: manifest
-       attrs:
-         package: ${appId}
     gradle:
      - file: app/build.gradle
        target:
@@ -89,6 +83,17 @@ platforms:
            namespace:
        replace:
          namespace: ${appId}
+    manifest:
+     - file: AndroidManifest.xml
+       target: manifest
+       attrs:
+         package: ${appId}
+    packageName: ${appId}
+    manifest:
+     - file: AndroidManifest.xml
+       target: manifest
+       deleteAttributes:
+         - package: ${appId}
     xml:
      - resFile: values/strings.xml
        target: resources/string[@name="app_name"]
@@ -162,16 +167,6 @@ if (generateAssets) {
      }
 }
 
-// Run npx cap sync
-console.log('Running command: npx cap sync');
-
-try {
-     execSync('npx cap sync', { stdio: 'inherit' }); // Execute cap sync
-} catch (error) {
-     console.error('Error executing cap sync command:', error.message);
-     process.exit(1); // Exit with an error code
-}
-
 // Run npx run trapeze command
 console.log('Running command: npx trapeze run');
 
@@ -179,6 +174,16 @@ try {
      execSync(`npx trapeze run ${yamlFileName} --android-project android --ios-project ios/App`, { stdio: 'inherit' });
 } catch (error) {
      console.error('Error executing trapeze command:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
+// Run npx cap sync
+console.log('Running command: npx cap sync');
+
+try {
+     execSync('npx cap sync', { stdio: 'inherit' }); // Execute cap sync
+} catch (error) {
+     console.error('Error executing cap sync command:', error.message);
      process.exit(1); // Exit with an error code
 }
 
