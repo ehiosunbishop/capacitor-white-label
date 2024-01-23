@@ -81,7 +81,7 @@ platforms:
          android:
            namespace:
        replace:
-         namespace: "${appId}"
+         namespace: '"${appId}"'
      
      - file: app/build.gradle
        target:
@@ -89,7 +89,7 @@ platforms:
            defaultConfig:
              applicationId:
        replace:
-         applicationId: "${appId}"
+         applicationId: '"${appId}"'
     xml:
      - resFile: values/strings.xml
        target: resources/string[@name="app_name"]
