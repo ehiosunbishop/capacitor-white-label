@@ -1,6 +1,6 @@
 {
   "name": "capacitor-white-label",
-  "version": "0.1.37",
+  "version": "1.0.38",
   "description": "A package that aids the build process for Capacitor apps designed for white labeling.",
   "main": "index.js",
   "scripts": {
