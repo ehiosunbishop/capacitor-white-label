@@ -14,6 +14,37 @@ const generateAssets = argv.generateAssets || false;
 const appFlowChannel = argv.appFlowChannel || null;
 const hostname = argv.hostname || appId;
 
+const projectRootx = process.cwd();
+// Update the Java directory
+const javaDirectory = path.join(projectRootx, 'android', 'app', 'src', 'main', 'java');
+const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
+
+try {
+     // Delete existing files and folders in the java directory
+     deleteFolderRecursive(javaDirectory);
+
+     // Create new directory structure
+     createDirectoryRecursive(path.join(javaDirectory, javaPackagePath));
+
+     // Create MainActivity.java file with the specified content
+     const mainActivityContent = `package ${appId};
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}
+`;
+
+     const mainActivityFilePath = path.join(javaDirectory, javaPackagePath, 'MainActivity.java');
+     fs.writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
+
+     console.log(`Java directory updated at: ${javaDirectory}`);
+} catch (error) {
+     console.error('Error updating Java directory:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
+process.exit(1); // Exit with an error code
+
 // Check if appId is provided
 if (!appId) {
      console.error('Error: App ID is required. Use the --appId flag to specify the App ID.');
@@ -63,33 +94,6 @@ try {
      process.exit(1); // Exit with an error code
 }
 
-// Update the Java directory
-const javaDirectory = path.join(projectRoot, 'android', 'app', 'src', 'main', 'java');
-const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
-
-try {
-     // Delete existing files and folders in the java directory
-     deleteFolderRecursive(javaDirectory);
-
-     // Create new directory structure
-     createDirectoryRecursive(path.join(javaDirectory, javaPackagePath));
-
-     // Create MainActivity.java file with the specified content
-     const mainActivityContent = `package ${appId};
-
-import com.getcapacitor.BridgeActivity;
-
-public class MainActivity extends BridgeActivity {}
-`;
-
-     const mainActivityFilePath = path.join(javaDirectory, javaPackagePath, 'MainActivity.java');
-     fs.writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
-
-     console.log(`Java directory updated at: ${javaDirectory}`);
-} catch (error) {
-     console.error('Error updating Java directory:', error.message);
-     process.exit(1); // Exit with an error code
-}
 
 // Create or update the YAML file with specific details
 const yamlFileName = 'trapeze-config.yaml';
