@@ -1,7 +1,6 @@
 const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
 const { execSync } = require('child_process');
 
 // Define default values or handle missing arguments as needed
@@ -14,7 +13,6 @@ const versionNumber = argv.versionNumber || '1.0.0';
 const generateAssets = argv.generateAssets || false;
 const appFlowChannel = argv.appFlowChannel || null;
 const hostname = argv.hostname || appId;
-
 
 // Check if appId is provided
 if (!appId) {
@@ -65,6 +63,34 @@ try {
      process.exit(1); // Exit with an error code
 }
 
+// Update the Java directory
+const javaDirectory = path.join('android', 'app', 'src', 'main', 'java');
+const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
+
+try {
+     // Delete existing files and folders in the java directory
+     deleteFolderRecursive(path.join(projectRoot, javaDirectory));
+
+     // Create new directory structure
+     createDirectoryRecursive(path.join(javaDirectory, javaPackagePath));
+
+     // Create MainActivity.java file with the specified content
+     const mainActivityContent = `package ${appId};
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {}
+`;
+
+     const mainActivityFilePath = path.join(javaDirectory, javaPackagePath, 'MainActivity.java');
+     fs.writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
+
+     console.log(`Java directory updated at: ${javaDirectory}`);
+} catch (error) {
+     console.error('Error updating Java directory:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
 // Create or update the YAML file with specific details
 const yamlFileName = 'trapeze-config.yaml';
 const yamlFilePath = path.join(projectRoot, yamlFileName);
@@ -82,18 +108,25 @@ platforms:
          android:
            namespace:
        replace:
-         namespace: ${appId}
+         namespace: '"${appId}"'
+     
+     - file: app/build.gradle
+       target:
+         android:
+           defaultConfig:
+             applicationId:
+       replace:
+         applicationId: '"${appId}"'
     manifest:
      - file: AndroidManifest.xml
-       target: manifest
+       target: manifest/application/activity
        attrs:
-         package: ${appId}
-    packageName: ${appId}
-    manifest:
+         android:name: ${appId}.MainActivity
+
      - file: AndroidManifest.xml
        target: manifest
        deleteAttributes:
-         - package: ${appId}
+         - package
     xml:
      - resFile: values/strings.xml
        target: resources/string[@name="app_name"]
@@ -113,7 +146,7 @@ platforms:
      - resFile: values/strings.xml
        target: resources/string[@name="custom_url_scheme"]
        replace: |
-         <string name="package_name">${appId}</string>
+         <string name="custom_url_scheme">${appId}</string>
   ios:
     targets:
       App:
@@ -167,6 +200,7 @@ if (generateAssets) {
      }
 }
 
+
 // Run npx run trapeze command
 console.log('Running command: npx trapeze run');
 
@@ -187,4 +221,31 @@ try {
      process.exit(1); // Exit with an error code
 }
 
-console.log('\x1b[32m%s\x1b[0m', 'App White Labeling was successful. You can run "npx cap open ios" to view the app now.');
+console.log('\x1b[32m%s\x1b[0m', 'App White Labeling was successful. You can run "npx cap open [platform]" to view the app now.');
+
+
+// Helper function to delete files and folders recursively
+function deleteFolderRecursive(directoryPath) {
+     if (fs.existsSync(directoryPath)) {
+          fs.readdirSync(directoryPath).forEach((file, index) => {
+               const filePath = path.join(directoryPath, file);
+               if (fs.lstatSync(filePath).isDirectory()) {
+                    deleteFolderRecursive(filePath);
+               } else {
+                    fs.unlinkSync(filePath);
+               }
+          });
+          fs.rmdirSync(directoryPath);
+     }
+}
+
+// Helper function to create directories recursively
+function createDirectoryRecursive(directoryPath) {
+     const parts = directoryPath.split(path.sep);
+     for (let i = 1; i <= parts.length; i++) {
+          const currentPath = path.join.apply(null, parts.slice(0, i));
+          if (!fs.existsSync(currentPath)) {
+               fs.mkdirSync(currentPath);
+          }
+     }
+}
