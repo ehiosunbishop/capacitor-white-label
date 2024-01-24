@@ -122,6 +122,11 @@ platforms:
        target: manifest/application/activity
        attrs:
          android:name: ${appId}.MainActivity
+
+     - file: AndroidManifest.xml
+       target: manifest
+       deleteAttributes:
+         - package
     xml:
      - resFile: values/strings.xml
        target: resources/string[@name="app_name"]
