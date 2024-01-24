@@ -33,44 +33,27 @@ cap-white-label configure --appId=com.example.myapp --appName="My App" --appFlow
 *   `--build`: Build the app. This basically runs `yarn build | npm run build` under the hood.
 *   `--prod`: Build your app for production `yarn build:prod`. Works with `--build`
 
-### Generate Splash Screen and Icon
+Dependencies
+------------
 
-Generate the necessary splash screen and icon assets:
-
-cap-white-label generate-assets --assetPath=resources/myapp
-
-*   `--assetPath`: Provide the path where the splash screen and icon assets will be generated.
+This package leverages on [@capacitor/assets](https://github.com/ionic-team/capacitor-assets) for generating icons and splash screen and also uses [Trapeze](https://trapeze.dev) for managing native configurations.
 
 ### White Labeling and Building
 
 White-label your app and build it for production:
 
-cap-white-label build --appId=com.example.myapp --appName="My App" --prod
+cap-white-label --build --appId=com.example.myapp --appName="My App" --prod
 
 *   `--prod`: Build the app for production.
 *   `--appId` and `--appName`: Similar to the configure command, these flags set the app ID and app name.
 
-### Run Trapeze
+### Generate Splash Screen and Icon
 
-Run Trapeze to apply additional white-labeling configurations:
+Generate the necessary splash screen and icon assets:
 
-cap-white-label run-trapeze
+    cap-white-label appId='com.cap.white.label' --generateAssets
 
-This command applies advanced white-labeling configurations using Trapeze.
-
-### Full Workflow
-
-To execute the full white-labeling workflow, including configuring, building, generating assets, and syncing with Capacitor:
-
-cap-white-label full --appId=com.example.myapp --appName="My App" --prod
-
-*   `--prod`: Build the app for production.
-*   `--appId` and `--appName`: Set the app ID and app name.
-
-Documentation
--------------
-
-For detailed documentation, examples, and additional configurations, please visit the [Capacitor White Label Documentation](#).
+**Important Note:** The `capacitor/assets` folder will look for a folder inside `resources` with the name being the `appId`. Example `resources/com.cap.white.label/icon.png`
 
 Contributing
 ------------
