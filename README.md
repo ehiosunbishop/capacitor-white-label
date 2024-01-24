@@ -8,7 +8,7 @@ Installation
 
 To install Capacitor White Label, run the following command:
 
-npm install -g cap-white-label
+`npm install -g cap-white-label`
 
 This installs the tool globally, allowing you to use it conveniently in any Capacitor project.
 
