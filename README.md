@@ -51,7 +51,7 @@ cap-white-label --build --appId=com.example.myapp --appName="My App" --prod
 
 Generate the necessary splash screen and icon assets:
 
-    cap-white-label appId='com.cap.white.label' --generateAssets
+    cap-white-label --appId='com.cap.white.label' --generateAssets
 
 **Important Note:** The `capacitor/assets` folder will look for a folder inside `resources` with the name being the `appId`. Example `resources/com.cap.white.label/icon.png`
 
