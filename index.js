@@ -185,6 +185,11 @@ if (build) {
 }
 
 if (generateAssets) {
+     const manifestFileName = 'manifest.webmanifest';
+     const manifestFilePath = path.join(projectRoot, manifestFileName);
+
+     if (manifestFilePath) cleanUpManifest(manifestFilePath);
+
      // Run npx @capacitor/assets generate...  Generate splash screen and icon paths
      const assetsPath = `resources/${appId}`;
 
@@ -247,5 +252,29 @@ function createDirectoryRecursive(directoryPath) {
           if (!fs.existsSync(currentPath)) {
                fs.mkdirSync(currentPath);
           }
+     }
+}
+
+// Helper function to clean up the manifest.webmanifest
+function cleanUpManifest(manifestFilePath) {
+     // Read the existing content of manifest.webmanifest
+     let manifestContent = fs.readFileSync(manifestFilePath, 'utf-8');
+
+     try {
+          // Parse the JSON content of the manifest
+          const manifest = JSON.parse(manifestContent);
+
+          // Clear the icons array in the manifest (make it empty)
+          manifest.icons = [];
+
+          // Convert the updated manifest object back to JSON string
+          const updatedManifestContent = JSON.stringify(manifest, null, 2);
+
+          // Write the updated manifest content back to the file
+          fs.writeFileSync(manifestFilePath, updatedManifestContent, 'utf-8');
+
+          console.log(`Manifest file '${manifestFileName}' cleaned up successfully.`);
+     } catch (error) {
+          console.log(`ERROR: cleaning up manifest file '${manifestFileName}':`, error.message);
      }
 }
