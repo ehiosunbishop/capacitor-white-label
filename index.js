@@ -14,6 +14,9 @@ const generateAssets = argv.generateAssets || false;
 const appFlowChannel = argv.appFlowChannel || null;
 const hostname = argv.hostname || appId;
 
+// Determine whether to use sudo (for Unix-like systems) or not
+const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
+
 // Check if appId is provided
 if (!appId) {
      console.error('Error: App ID is required. Use the --appId flag to specify the App ID.');
@@ -172,8 +175,6 @@ if (build) {
      const buildCommand = isProd ? 'yarn build:prod' : 'yarn build';
      console.log(`Running command: ${buildCommand}`);
 
-     // Determine whether to use sudo (for Unix-like systems) or not
-     const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
      const commandPrefix = useSudo ? 'sudo ' : ''; // Add 'sudo ' prefix if necessary
 
      try {
@@ -193,8 +194,10 @@ if (generateAssets) {
      // Run npx @capacitor/assets generate...  Generate splash screen and icon paths
      const assetsPath = `resources/${appId}`;
 
+     const commandPrefix = useSudo ? 'sudo ' : ''; // Add 'sudo ' prefix if necessary
+
      // Run the command to generate splash screen and icon
-     const generateCommand = `npx @capacitor/assets generate --assetPath=${assetsPath}`;
+     const generateCommand = `${commandPrefix} npx @capacitor/assets generate --assetPath=${assetsPath}`;
      console.log(`Running command: ${generateCommand}`);
 
      try {
