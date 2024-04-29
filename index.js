@@ -273,8 +273,8 @@ function cleanUpManifest(manifestFilePath) {
           // Write the updated manifest content back to the file
           fs.writeFileSync(manifestFilePath, updatedManifestContent, 'utf-8');
 
-          console.log(`Manifest file '${manifestFileName}' cleaned up successfully.`);
+          console.log(`Manifest file cleaned up successfully.`);
      } catch (error) {
-          console.log(`ERROR: cleaning up manifest file '${manifestFileName}':`, error.message);
+          console.log(`ERROR: cleaning up manifest.webmanifest :`, error.message);
      }
 }
