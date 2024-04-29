@@ -185,7 +185,7 @@ if (build) {
 }
 
 if (generateAssets) {
-     const manifestFileName = 'manifest.webmanifest';
+     const manifestFileName = 'src/manifest.webmanifest';
      const manifestFilePath = path.join(projectRoot, manifestFileName);
 
      if (manifestFilePath) cleanUpManifest(manifestFilePath);
