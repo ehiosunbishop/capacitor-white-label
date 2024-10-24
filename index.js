@@ -182,6 +182,11 @@ platforms:
          applicationId: '"${appId}"'
     manifest:
      - file: AndroidManifest.xml
+       target: manifest/application/activity/intent-filter/data
+       attrs:
+         android:host: ${hostname}
+
+     - file: AndroidManifest.xml
        target: manifest/application/activity
        attrs:
          android:name: ${appId}.MainActivity
