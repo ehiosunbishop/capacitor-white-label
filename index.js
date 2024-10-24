@@ -94,6 +94,36 @@ try {
      process.exit(1); // Exit with an error code
 }
 
+// Update assetlinks.json with the provided appId and sha256CertFingerprint
+const androidAssetlinksPath = path.join(projectRoot, 'src/.well-known/assetlinks.json');
+
+try {
+     // Read the existing content of assetlinks.json
+     let androidAssetlinksContent = fs.readFileSync(androidAssetlinksPath, 'utf-8');
+
+     if (appId && sha256Cert) {
+          // Replace the package_name and sha256_cert_fingerprints in the assetlinks.json content
+          const updatedContent = androidAssetlinksContent
+               .replace(/"package_name":\s*"(.*?)"/, (match, group) => {
+                    // Replace only the package_name with the new appId
+                    return match.replace(group, appId);
+               })
+               .replace(/"sha256_cert_fingerprints":\s*\["(.*?)"\]/, (match, group) => {
+                    // Replace only the sha256_cert_fingerprints with the new sha256Cert
+                    return match.replace(group, sha256Cert);
+               });
+
+          // Write the modified content back to the assetlinks.json file
+          fs.writeFileSync(androidAssetlinksPath, updatedContent, 'utf-8');
+          console.log('Successfully updated assetlinks.json');
+     } else {
+          console.error('ERROR: File not updated: appId or sha256Cert was not provided.');
+     }
+} catch (error) {
+     console.error('Error updating assetlinks.json:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
 // Update the Java directory
 const javaDirectory = path.join('android', 'app', 'src', 'main', 'java');
 const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
