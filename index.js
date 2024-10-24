@@ -66,6 +66,34 @@ try {
      process.exit(1); // Exit with an error code
 }
 
+// Update apple-app-site-association with the provided appId
+const appleAppSiteAssociationPath = path.join(projectRoot, 'src/.well-known/apple-app-site-association');
+
+try {
+     // Read the existing content of apple-app-site-association
+     let appleAppSiteAssociationContent = fs.readFileSync(appleAppSiteAssociationPath, 'utf-8');
+
+     if (teamId && appId) {
+          // Replace the appID in the apple-app-site-association content
+          const updatedContent = appleAppSiteAssociationContent.replace(
+               /"appID":\s*"(.*?)"/,
+               (match, group) => {
+                    // Replace only the appID portion with the new format teamId.appId
+                    return match.replace(group, `${teamId}.${appId}`);
+               }
+          );
+
+          // Write the modified content back to the apple-app-site-association file
+          fs.writeFileSync(appleAppSiteAssociationPath, updatedContent, 'utf-8');
+          console.log('Successfully updated apple-app-site-association');
+     } else {
+          console.error('ERROR: File not updated: teamId or appId was not provided.');
+     }
+} catch (error) {
+     console.error('Error updating apple-app-site-association:', error.message);
+     process.exit(1); // Exit with an error code
+}
+
 // Update the Java directory
 const javaDirectory = path.join('android', 'app', 'src', 'main', 'java');
 const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
