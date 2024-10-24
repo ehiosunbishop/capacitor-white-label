@@ -226,7 +226,7 @@ platforms:
         entitlements:
           replace: true
           entries:
-            - com.apple.developer.associated-domains: ['"applinks:${hostname}"']
+            - com.apple.developer.associated-domains: ['applinks:${hostname}']
         buildSettings:
           INFOPLIST_KEY_CFBundleDisplayName: ${appName}
      `;
