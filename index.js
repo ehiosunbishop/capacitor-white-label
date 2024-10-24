@@ -12,6 +12,8 @@ const buildNumber = argv.buildNumber || 1;
 const versionNumber = argv.versionNumber || '1.0.0';
 const generateAssets = argv.generateAssets || false;
 const appFlowChannel = argv.appFlowChannel || null;
+const teamId = argv.teamId || null;
+const sha256Cert = argv.sha256Cert || null;
 const hostname = argv.hostname || appId;
 
 // Determine whether to use sudo (for Unix-like systems) or not

@@ -27,11 +27,13 @@ cap-white-label configure --appId=com.example.myapp --appName="My App" --appFlow
 *   `--appName`: Specify the name of your application.
 *   `--buildNumber`: Specify the build number of your application.
 *   `--versionNumber`: Specify the version number of your application.
-*   `--hostname`: Configure the local hostname of the device. By default it uses `--appId`
+*   `--hostname`: Configure the local hostname of the device. By default, it uses `--appId`.
 *   `--appFlowChannel`: Set the desired app flow channel (e.g., 'stable', 'beta').
-*   `--generateAssets` This will generate all icons and splash screen
+*   `--generateAssets`: This will generate all icons and splash screen.
 *   `--build`: Build the app. This basically runs `yarn build | npm run build` under the hood.
-*   `--prod`: Build your app for production `yarn build:prod`. Works with `--build`
+*   `--prod`: Build your app for production `yarn build:prod`. Works with `--build`.
+*   `--teamId`: Provide the team identifier for iOS, used to generate the `apple-app-site-association` file.
+*   `--sha256Cert`: Specify the SHA-256 certificate fingerprint for Android, used in the `assetlinks.json` file.
 
 Dependencies
 ------------
