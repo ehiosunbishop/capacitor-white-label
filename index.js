@@ -11,10 +11,12 @@ const appName = argv.appName || 'Capacitor App';
 const buildNumber = argv.buildNumber || 1;
 const versionNumber = argv.versionNumber || '1.0.0';
 const generateAssets = argv.generateAssets || false;
+const increamentBuildNumber = argv.increamentBuildNumber || false;
 const appFlowChannel = argv.appFlowChannel || null;
 const teamId = argv.teamId || null;
 const sha256Cert = argv.sha256Cert || null;
 const hostname = argv.hostname || appId;
+const entitlements = argv.entitlements || null;
 
 // Determine whether to use sudo (for Unix-like systems) or not
 const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
@@ -126,6 +128,42 @@ try {
      process.exit(1); // Exit with an error code
 }
 
+// Define the output directory in the Capacitor Android project
+const androidAppPath = path.join(__dirname, 'android', 'app');
+const firebaseFilePath = path.join(androidAppPath, 'google-services.json');
+
+try {
+     // Define the Firebase config JSON data
+     const firebaseConfig = {
+          project_info: {
+               project_number: "",
+               project_id: "",
+               storage_bucket: ""
+          },
+          client: [
+               {
+                    client_info: {
+                         mobilesdk_app_id: "",
+                         android_client_info: {
+                              package_name: appId
+                         }
+                    },
+                    api_key: [
+                         {
+                              current_key: ""
+                         }
+                    ]
+               }
+          ]
+     };
+
+     fs.writeFileSync(firebaseFilePath, JSON.stringify(firebaseConfig, null, 2));
+     console.log('✅ Firebase config successfully created.');
+} catch (error) {
+     console.error(`❌ Error writing Firebase config: ${err.message}`);
+     process.exit(1); // Exit with an error code
+}
+
 // Update the Java directory
 const javaDirectory = path.join('android', 'app', 'src', 'main', 'java');
 const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
@@ -164,7 +202,7 @@ platforms:
   android:
     appName: ${appName}
     versionName: ${versionNumber}
-    versionCode: ${buildNumber}
+    ${increamentBuildNumber ? 'incrementVersionCode: true' : `versionCode: ${buildNumber}`}
     gradle:
      - file: app/build.gradle
        target:
@@ -181,11 +219,6 @@ platforms:
        replace:
          applicationId: '"${appId}"'
     manifest:
-     - file: AndroidManifest.xml
-       target: manifest/application/activity/intent-filter/data
-       attrs:
-         android:host: ${hostname}
-
      - file: AndroidManifest.xml
        target: manifest/application/activity
        attrs:
@@ -215,18 +248,23 @@ platforms:
        target: resources/string[@name="custom_url_scheme"]
        replace: |
          <string name="custom_url_scheme">${appId}</string>
+     
+     - resFile: values/strings.xml
+       target: resources/string[@name="deeplink_url"]
+       replace: |
+         <string name="deeplink_url">${hostname}</string>
   ios:
     targets:
       App:
         version: ${versionNumber}
-        buildNumber: ${buildNumber}
+        ${increamentBuildNumber ? 'incrementBuild: true' : `buildNumber: ${buildNumber}`}
         bundleId: ${appId}
         displayName: ${appName}
         productName: ${appName}
         entitlements:
           replace: true
           entries:
-            - com.apple.developer.associated-domains: ['applinks:${hostname}']
+            - com.apple.developer.associated-domains: ${generateEntitlementsFromHostnames(entitlements ?? hostname)}
         buildSettings:
           INFOPLIST_KEY_CFBundleDisplayName: ${appName}
      `;
@@ -349,4 +387,17 @@ function cleanUpManifest(manifestFilePath) {
      } catch (error) {
           console.log(`ERROR: cleaning up manifest.webmanifest :`, error.message);
      }
+}
+
+// Helper function to generate entitlements from hostnames
+function generateEntitlementsFromHostnames(hostname) {
+     if (!hostname) {
+          throw new Error('Missing hostname');
+     }
+
+     const entries = hostname
+          .split(',')
+          .map(h => `applinks:${h.trim()}`);
+
+     return `[${entries.map(e => `'${e}'`).join(', ')}]`;
 }
