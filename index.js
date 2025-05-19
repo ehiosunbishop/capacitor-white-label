@@ -284,7 +284,7 @@ if (generateAssets) {
 console.log('Running command: npx trapeze run');
 
 try {
-     execSync(`npx trapeze run ${yamlFileName} --android-project android --ios-project ios/App --yes`, { stdio: 'inherit' });
+     execSync(`echo yes | npx trapeze run ${yamlFileName} --android-project android --ios-project ios/App`, { stdio: 'inherit' });
 } catch (error) {
      console.error('Error executing trapeze command:', error.message);
      process.exit(1); // Exit with an error code
