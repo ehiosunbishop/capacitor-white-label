@@ -128,42 +128,6 @@ try {
      process.exit(1); // Exit with an error code
 }
 
-// Define the output directory in the Capacitor Android project
-const androidAppPath = path.join(__dirname, 'android', 'app');
-const firebaseFilePath = path.join(androidAppPath, 'google-services.json');
-
-try {
-     // Define the Firebase config JSON data
-     const firebaseConfig = {
-          project_info: {
-               project_number: "",
-               project_id: "",
-               storage_bucket: ""
-          },
-          client: [
-               {
-                    client_info: {
-                         mobilesdk_app_id: "",
-                         android_client_info: {
-                              package_name: appId
-                         }
-                    },
-                    api_key: [
-                         {
-                              current_key: ""
-                         }
-                    ]
-               }
-          ]
-     };
-
-     fs.writeFileSync(firebaseFilePath, JSON.stringify(firebaseConfig, null, 2));
-     console.log('✅ Firebase config successfully created.');
-} catch (error) {
-     console.error(`❌ Error writing Firebase config: ${err.message}`);
-     process.exit(1); // Exit with an error code
-}
-
 // Update the Java directory
 const javaDirectory = path.join('android', 'app', 'src', 'main', 'java');
 const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
