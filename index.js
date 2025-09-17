@@ -235,10 +235,13 @@ platforms:
           - replace: true
             entries:
               - CFBundleURLTypes:
+                  - CFBundleURLName: ${appId}
+
+          - replace: true
+            entries:
+              - CFBundleURLTypes:
                   - CFBundleURLSchemes:
                       - ${appId}
-              - CFBundleURLTypes:
-                  - CFBundleURLName: ${appId}
      `;
 
      // Write the YAML content to the file
