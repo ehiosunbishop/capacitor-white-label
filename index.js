@@ -231,6 +231,14 @@ platforms:
             - com.apple.developer.associated-domains: ${generateEntitlementsFromHostnames(entitlements ?? hostname)}
         buildSettings:
           INFOPLIST_KEY_CFBundleDisplayName: ${appName}
+        plist:
+          - replace: true
+            entries:
+              - CFBundleURLTypes:
+                  - CFBundleURLSchemes:
+                      - ${appId}
+              - CFBundleURLTypes:
+                  - CFBundleURLName: ${appId}
      `;
 
      // Write the YAML content to the file
