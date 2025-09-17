@@ -237,7 +237,7 @@ platforms:
               - CFBundleURLTypes:
                   - CFBundleURLName: ${appId}
 
-          - replace: true
+          - replace: false
             entries:
               - CFBundleURLTypes:
                   - CFBundleURLSchemes:
