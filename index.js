@@ -131,30 +131,91 @@ try {
 // Update the Java directory
 const javaDirectory = path.join('android', 'app', 'src', 'main', 'java');
 const javaPackagePath = appId.replace(/\./g, '/'); // Convert dots to slashes
+const targetDir = path.join(javaDirectory, javaPackagePath);
 
 try {
      // Delete existing files and folders in the java directory
      deleteFolderRecursive(path.join(projectRoot, javaDirectory));
 
      // Create new directory structure
-     createDirectoryRecursive(path.join(javaDirectory, javaPackagePath));
+     createDirectoryRecursive(targetDir);
 
-     // Create MainActivity.java file with the specified content
-     const mainActivityContent = `package ${appId};
+     // 🔥 Check if --firebase flag was passed
+     const withFirebase = getFlag('firebase', false);
+
+     let mainActivityContent;
+
+     if (withFirebase) {
+          mainActivityContent = `package ${appId};
+
+import android.os.Bundle;
+
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    registerPlugin(FirebaseChecker.class);
+    super.onCreate(savedInstanceState);
+  }
+}
+`;
+
+          // Create FirebaseChecker.java if firebase flag is on
+          const firebaseCheckerContent = `package ${appId};
+
+import android.content.Context;
+
+import com.getcapacitor.JSObject;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+
+import com.google.firebase.FirebaseApp;
+
+@CapacitorPlugin(name = "FirebaseChecker")
+public class FirebaseChecker extends Plugin {
+
+  @PluginMethod()
+  public void isFirebaseConfigured(PluginCall call) {
+    try {
+      Context context = getContext();
+      boolean isConfigured = !FirebaseApp.getApps(context).isEmpty();
+
+      JSObject ret = new JSObject();
+      ret.put("status", isConfigured);
+      call.resolve(ret);
+
+    } catch (Exception e) {
+      call.reject("Error checking Firebase config", e);
+    }
+  }
+}
+`;
+
+          const firebaseCheckerFilePath = path.join(targetDir, 'FirebaseChecker.java');
+          fs.writeFileSync(firebaseCheckerFilePath, firebaseCheckerContent, 'utf-8');
+          log('✅ FirebaseChecker.java created.');
+     } else {
+          mainActivityContent = `package ${appId};
 
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {}
 `;
+     }
 
-     const mainActivityFilePath = path.join(javaDirectory, javaPackagePath, 'MainActivity.java');
+     // Write MainActivity.java
+     const mainActivityFilePath = path.join(targetDir, 'MainActivity.java');
      fs.writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
 
-     console.log(`Java directory updated at: ${javaDirectory}`);
+     log(`✅ Java directory updated at: ${javaDirectory}`);
 } catch (error) {
-     console.error('Error updating Java directory:', error.message);
-     process.exit(1); // Exit with an error code
+     console.error('❌ Error updating Java directory:', error.message);
+     process.exit(1);
 }
+
 
 // Create or update the YAML file with specific details
 const yamlFileName = 'trapeze-config.yaml';
