@@ -17,6 +17,7 @@ const teamId = argv.teamId || null;
 const sha256Cert = argv.sha256Cert || null;
 const hostname = argv.hostname || appId;
 const entitlements = argv.entitlements || null;
+const withFirebase = argv.firebase || false;
 
 // Determine whether to use sudo (for Unix-like systems) or not
 const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
@@ -139,9 +140,6 @@ try {
 
      // Create new directory structure
      createDirectoryRecursive(targetDir);
-
-     // 🔥 Check if --firebase flag was passed
-     const withFirebase = getFlag('firebase', false);
 
      let mainActivityContent;
 
