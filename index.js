@@ -194,7 +194,7 @@ public class FirebaseChecker extends Plugin {
 
           const firebaseCheckerFilePath = path.join(targetDir, 'FirebaseChecker.java');
           fs.writeFileSync(firebaseCheckerFilePath, firebaseCheckerContent, 'utf-8');
-          log('✅ FirebaseChecker.java created.');
+          console.log('✅ FirebaseChecker.java created.');
      } else {
           mainActivityContent = `package ${appId};
 
@@ -208,7 +208,7 @@ public class MainActivity extends BridgeActivity {}
      const mainActivityFilePath = path.join(targetDir, 'MainActivity.java');
      fs.writeFileSync(mainActivityFilePath, mainActivityContent, 'utf-8');
 
-     log(`✅ Java directory updated at: ${javaDirectory}`);
+     console.log(`✅ Java directory updated at: ${javaDirectory}`);
 } catch (error) {
      console.error('❌ Error updating Java directory:', error.message);
      process.exit(1);
