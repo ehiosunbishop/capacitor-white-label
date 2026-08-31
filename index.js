@@ -18,6 +18,8 @@ const sha256Cert = argv.sha256Cert || null;
 const hostname = argv.hostname || appId;
 const entitlements = argv.entitlements || null;
 const withFirebase = argv.firebase || false;
+const enableIpad = argv.enableIpad || false;
+const targetedDevices = enableIpad ? '1,2' : '1';
 
 // Determine whether to use sudo (for Unix-like systems) or not
 const useSudo = process.platform !== 'win32' && process.getuid() !== 0; // Check if not running as root (Unix-like)
@@ -290,6 +292,7 @@ platforms:
             - com.apple.developer.associated-domains: ${generateEntitlementsFromHostnames(entitlements ?? hostname)}
         buildSettings:
           INFOPLIST_KEY_CFBundleDisplayName: ${appName}
+          TARGETED_DEVICE_FAMILY: ${targetedDevices}
         plist:
           - replace: true
             entries:
@@ -301,6 +304,7 @@ platforms:
               - CFBundleURLTypes:
                   - CFBundleURLSchemes:
                       - ${appId}
+        
      `;
 
      // Write the YAML content to the file
