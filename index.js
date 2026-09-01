@@ -292,7 +292,7 @@ platforms:
             - com.apple.developer.associated-domains: ${generateEntitlementsFromHostnames(entitlements ?? hostname)}
         buildSettings:
           INFOPLIST_KEY_CFBundleDisplayName: ${appName}
-          TARGETED_DEVICE_FAMILY: ${targetedDevices}
+          TARGETED_DEVICE_FAMILY: '"${targetedDevices}"'
         plist:
           - replace: true
             entries:
